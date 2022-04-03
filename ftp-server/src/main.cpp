@@ -6,9 +6,11 @@ using namespace std;
 
 int main(int argc, char** args) {
   if(argc < 2) {
-    perror("Error: no config settings given\n");
+    printf("%s:\nError: no config settings given\n", getTime().c_str());
     exit(EXIT_FAILURE);
   }
+
+  ServerConfig::resetLogFile();
 
   ServerConfig::setConfig(args[1]);
   

@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "utils.h"
+#include "serverConfig.h"
 
 #define MAX_COMMAND_SIZE 1024
 #define LINE_SIZE 1024

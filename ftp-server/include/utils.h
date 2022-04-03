@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include "serverConfig.h"
+
 std::vector<std::string> split(std::string, char);
 
 int createMasterSocket(int, struct sockaddr_in*);

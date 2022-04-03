@@ -1,0 +1,12 @@
+2022, Apr  4 01:41:01:
+2 users can use this server
+2022, Apr  4 01:41:01:
+socket with fd = 3 has been created
+2022, Apr  4 01:41:01:
+socket has binded with address 127.0.0.1:8000
+2022, Apr  4 01:41:01:
+socket with fd = 4 has been created
+2022, Apr  4 01:41:01:
+socket has binded with address 127.0.0.1:8001
+2022, Apr  4 01:41:01:
+sockets started listening

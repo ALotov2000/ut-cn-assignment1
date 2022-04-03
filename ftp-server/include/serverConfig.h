@@ -28,6 +28,8 @@ class ServerConfig {
     static std::vector<std::string> adminFiles;
 
     public:
+    static void resetLogFile();
+    static void log(std::string);
     static void setConfig(char*);
     static void establishServer();
     static void startService();

@@ -23,17 +23,19 @@ std::vector<std::string> split(std::string command, char sep) {
 }
 
 int createMasterSocket(int port, struct sockaddr_in* socketAddress) {
+  char clog[1024];
+
   int socketFD;
   //create master socket started
   if ((socketFD = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-    printf("%s:\nError: socket failed\n", getTime().c_str());
+    sprintf(clog, "%s:\nError: socket failed\n", getTime().c_str()); ServerConfig::log(std::string(clog));
     exit(EXIT_FAILURE);
   }
-  printf("%s:\nsocket with fd = %d has been created\n", getTime().c_str(), socketFD);
+  sprintf(clog, "%s:\nsocket with fd = %d has been created\n", getTime().c_str(), socketFD); ServerConfig::log(std::string(clog));
     //set socket options started
   int opt = 1;
   if (setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-    printf("%s:\nError: setsockopt failed", getTime().c_str());
+    sprintf(clog, "%s:\nError: setsockopt failed", getTime().c_str()); ServerConfig::log(std::string(clog));
     exit(EXIT_FAILURE);
   }
     //set socket options finished
@@ -45,16 +47,16 @@ int createMasterSocket(int port, struct sockaddr_in* socketAddress) {
   sockAddr.sin_family = AF_INET;
   sockAddr.sin_port = htons(port);
   if(inet_pton(AF_INET, "127.0.0.1", &sockAddr.sin_addr) <= 0) {
-    printf("%s:\nError: invalid address: address not supported\n", getTime().c_str());
+    sprintf(clog, "%s:\nError: invalid address: address not supported\n", getTime().c_str()); ServerConfig::log(std::string(clog));
     exit(EXIT_FAILURE);
   }
     //set address finished  
   if (bind(socketFD, (struct sockaddr *) &sockAddr, sizeof(sockAddr)) < 0) {
-    printf("%s:\nError: bind failed\n", getTime().c_str());
+    sprintf(clog, "%s:\nError: bind failed\n", getTime().c_str()); ServerConfig::log(std::string(clog));
     exit(EXIT_FAILURE);
   }
 
-  printf("%s:\nsocket has binded with address 127.0.0.1:%u\n", getTime().c_str(), port);
+  sprintf(clog, "%s:\nsocket has binded with address 127.0.0.1:%u\n", getTime().c_str(), port); ServerConfig::log(std::string(clog));
   //bind finished
   return socketFD;
 }

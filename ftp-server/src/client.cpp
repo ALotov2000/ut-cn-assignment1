@@ -1,6 +1,8 @@
 #include "../include/client.h"
 
 void Client::handle() {
+  char clog[1024];
+
   char ccommand[MAX_COMMAND_SIZE], cresponse[MAX_COMMAND_SIZE];
   std::string command;
   std::string data;
@@ -10,11 +12,11 @@ void Client::handle() {
   while(true) {
     //read command
     if(recv(fd, &ccommand, MAX_COMMAND_SIZE, 0) < 0) {
-      printf("FD: %d :Error: read failed\n", fd);
+      sprintf(clog, "FD: %d :Error: read failed\n", fd); ServerConfig::log(std::string(clog));
       return;
     }
     command = std::string(ccommand);
-    printf("FD: %d :got command: \"%s\"\n", fd, command.c_str());
+    sprintf(clog, "FD: %d :got command: \"%s\"\n", fd, command.c_str()); ServerConfig::log(std::string(clog));
 
     //break command into pieces
     std::vector<std::string> splitted = split(command, ' ');
@@ -341,6 +343,7 @@ void Client::handle() {
       continue;
     }
     
+    //help
     if(splitted[0] == "help") {
 
       char ch[LINE_SIZE];
@@ -361,13 +364,6 @@ void Client::handle() {
       fclose(fp);
       size = data.size() + 1;
 
-      if((*(this->remainingSize))[this->userId] < size + LINE_SIZE) {
-        sprintf(cresponse, "425: can not open data connection (not enough remaining size)\n");
-        this->handleResponse(cresponse);
-      }
-
-      (*(this->remainingSize))[this->userId] -= size + LINE_SIZE;
-
       char csize[LINE_SIZE]; sprintf(csize, "%d", size);
 
       send(this->dataSocketFD, csize, LINE_SIZE, 0);
@@ -386,8 +382,10 @@ void Client::handle() {
 }
 
 void Client::handleResponse(char* text) {
+  char clog[1024];
+
   int fd = this->commandSocketFD;
   int size = (this->userId == (Json::ArrayIndex)-1) ? 0: (*(this->remainingSize))[(int)this->userId];
   send(fd, text, MAX_COMMAND_SIZE, 0);
-  printf("%s:\nFD: %d (userId = %d, qualified: %s, isadmin: %s, size: %d) : %s", getTime().c_str(), fd, this->userId, this->qualified? "true": "false", this->isadmin? "true": "false", size, text);
+  sprintf(clog, "%s:\nFD: %d (userId = %d, qualified: %s, isadmin: %s, size: %d) : %s", getTime().c_str(), fd, this->userId, this->qualified? "true": "false", this->isadmin? "true": "false", size, text); ServerConfig::log(std::string(clog));
 }
