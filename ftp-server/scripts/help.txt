@@ -1,0 +1,18 @@
+0
+"user" [name], used to login a user; its argument is to specify the username of that user; should be followed up by a "pass" command to complete the login process.
+1
+"pass" [password], used to pass the password to server to authenticate the user.
+2
+"pwd", used to get the current working directory.
+3
+"mkd [dirname]", used to create a directory; its argument would be the specific name of the directory.
+4
+"dele (-f|-d) [name]", used to delete a file or directory; the flag determines whether a directory would be deleted or a file; this flag is required; its argument would be the name of the file or directory which should be deleted.
+5
+"ls", used to retrieve all the files on the current working directory.
+6
+"cwd [newPath]", used to traverse between directories; its argument is the path of demanded directory which the user wants to travel to.
+7
+"rename [oldname] [newname]", used to rename files and directories; the first argument would be the name of the file which the user demands it to change; the second argument is the name its name should turn to.
+8
+"retr [filepath]", used to request a file from the server; the argument would be the path to the file.
