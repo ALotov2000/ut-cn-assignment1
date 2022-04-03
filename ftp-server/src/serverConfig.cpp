@@ -22,7 +22,7 @@ void ServerConfig::setConfig(char* configFile) {
   for(Json::ArrayIndex i; i < ServerConfig::root["files"].size(); ++i) {
     ServerConfig::adminFiles.push_back(ServerConfig::root["files"][i].asString());
   }
-  printf("%d users can use this server\n", ServerConfig::root["users"].size());
+  printf("%s:\n%d users can use this server\n", getTime().c_str(), ServerConfig::root["users"].size());
 }
 
 void ServerConfig::establishServer() {
@@ -34,15 +34,15 @@ void ServerConfig::establishServer() {
 void ServerConfig::startService() {
   //listen started
   if (listen(ServerConfig::commandMasterSocketFD, 3) < 0) {  
-    perror("Error: listen failed\n");  
+    printf("%s:\nError: listen failed\n", getTime().c_str());  
     exit(EXIT_FAILURE);  
   }
   if (listen(ServerConfig::dataMasterSocketFD, 3) < 0) {  
-    perror("Error: listen failed\n");  
+    printf("%s:\nError: listen failed\n", getTime().c_str());  
     exit(EXIT_FAILURE);  
   }
   
-  printf("sockets have started listening\n");
+  printf("%s:\nsockets have started listening\n", getTime().c_str());
   //listen finished
 
   //loop to accept multiple clients
@@ -52,15 +52,15 @@ void ServerConfig::startService() {
     int dataAddrlen = sizeof(ServerConfig::dataMasterSocketAddress);
     int newCommandClientSocketFD, newDataClientSocketFD;
     if((newCommandClientSocketFD = accept(ServerConfig::commandMasterSocketFD, (struct sockaddr*) &ServerConfig::commandMasterSocketAddress, (socklen_t*) &commandAddrlen)) < 0) {
-      perror("Error: command socket accept failed");
+      printf("%s:\nError: command socket accept failed", getTime().c_str());
       continue;
     }
     if((newDataClientSocketFD = accept(ServerConfig::dataMasterSocketFD, (struct sockaddr*) &ServerConfig::dataMasterSocketAddress, (socklen_t*) &dataAddrlen)) < 0) {
-      perror("Error: data socket accept failed");
+      printf("%s:\nError: data socket accept failed", getTime().c_str());
       continue;
     }
 
-    printf("command socket with fd = %d and data socket with fd = %d have been accepted\n", newCommandClientSocketFD, newDataClientSocketFD);
+    printf("%s:\ncommand socket with fd = %d and data socket with fd = %d have been accepted\n", getTime().c_str(), newCommandClientSocketFD, newDataClientSocketFD);
     //accept finished
 
     //create thread started
@@ -68,7 +68,7 @@ void ServerConfig::startService() {
     Client client = Client(newCommandClientSocketFD, newDataClientSocketFD, &ServerConfig::root, &ServerConfig::isUsersAvailable, &ServerConfig::remainingSize, &ServerConfig::adminFiles);
     pthread_create(&tid, NULL, ServerConfig::handleClient, (void*) &client);
 
-    printf("thread with tid = %lu has been created to handle command socket with fd = %d and data socket with fd = %d\n", tid, newCommandClientSocketFD, newDataClientSocketFD);
+    printf("%s:\nthread with tid = %lu has been created to handle command socket with fd = %d and data socket with fd = %d\n", getTime().c_str(), tid, newCommandClientSocketFD, newDataClientSocketFD);
     //create thread finished
   }
 
@@ -79,6 +79,6 @@ void* ServerConfig::handleClient(void* _args) {
   Client* client = (Client*) _args;
   client -> handle();
   close(client -> getSocket());
-  printf("FD: %d: successfully finished and thread has exitted\n", client -> getSocket());
+  printf("%s:\nFD: %d: successfully finished and thread has exitted\n", getTime().c_str(), client -> getSocket());
   pthread_exit(NULL);
 }

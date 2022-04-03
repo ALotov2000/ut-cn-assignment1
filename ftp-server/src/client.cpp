@@ -389,5 +389,5 @@ void Client::handleResponse(char* text) {
   int fd = this->commandSocketFD;
   int size = (this->userId == (Json::ArrayIndex)-1) ? 0: (*(this->remainingSize))[(int)this->userId];
   send(fd, text, MAX_COMMAND_SIZE, 0);
-  printf("FD: %d (userId = %d, qualified: %s, isadmin: %s, size: %d) : %s", fd, this->userId, this->qualified? "true": "false", this->isadmin? "true": "false", size, text);
+  printf("%s:\nFD: %d (userId = %d, qualified: %s, isadmin: %s, size: %d) : %s", getTime().c_str(), fd, this->userId, this->qualified? "true": "false", this->isadmin? "true": "false", size, text);
 }

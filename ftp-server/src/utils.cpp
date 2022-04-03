@@ -26,14 +26,14 @@ int createMasterSocket(int port, struct sockaddr_in* socketAddress) {
   int socketFD;
   //create master socket started
   if ((socketFD = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-    perror("Error: socket failed\n");
+    printf("%s:\nError: socket failed\n", getTime().c_str());
     exit(EXIT_FAILURE);
   }
-  printf("socket with fd = %d has been created\n", socketFD);
+  printf("%s:\nsocket with fd = %d has been created\n", getTime().c_str(), socketFD);
     //set socket options started
   int opt = 1;
   if (setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-    perror("Error: setsockopt failed");
+    printf("%s:\nError: setsockopt failed", getTime().c_str());
     exit(EXIT_FAILURE);
   }
     //set socket options finished
@@ -45,16 +45,30 @@ int createMasterSocket(int port, struct sockaddr_in* socketAddress) {
   sockAddr.sin_family = AF_INET;
   sockAddr.sin_port = htons(port);
   if(inet_pton(AF_INET, "127.0.0.1", &sockAddr.sin_addr) <= 0) {
-    printf("Error: invalid address: address not supported\n");
+    printf("%s:\nError: invalid address: address not supported\n", getTime().c_str());
     exit(EXIT_FAILURE);
   }
     //set address finished  
   if (bind(socketFD, (struct sockaddr *) &sockAddr, sizeof(sockAddr)) < 0) {
-    perror("Error: bind failed\n");
+    printf("%s:\nError: bind failed\n", getTime().c_str());
     exit(EXIT_FAILURE);
   }
 
-  printf("socket has binded with address 127.0.0.1:%u\n", port);
+  printf("%s:\nsocket has binded with address 127.0.0.1:%u\n", getTime().c_str(), port);
   //bind finished
   return socketFD;
+}
+
+std::string getTime() {
+
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer [80];
+
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+
+  strftime (buffer,80,"%Y, %h %e %H:%M:%S",timeinfo);
+  
+  return std::string(buffer);
 }
